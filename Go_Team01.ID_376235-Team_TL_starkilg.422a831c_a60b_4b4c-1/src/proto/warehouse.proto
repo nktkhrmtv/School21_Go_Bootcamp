@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package warehouse;
+option go_package = ".;proto";
+
+service Warehouse {
+  rpc Get(GetRequest) returns (GetResponse) {}
+  rpc Set(SetRequest) returns (SetResponse) {}
+  rpc Delete(DeleteRequest) returns (DeleteResponse) {}
+  rpc Heartbeat(HeartbeatRequest) returns (HeartbeatResponse) {}
+  rpc Join(JoinRequest) returns (JoinResponse) {}
+  rpc SyncData(SyncRequest) returns (stream DataEntry);
+}
+
+message GetRequest {
+  string key = 1;
+}
+
+message GetResponse {
+  string value = 1;
+  bool found = 2;
+}
+
+message SetRequest {
+  string key = 1;
+  string value = 2;
+  bool is_replica = 3; 
+}
+
+message SetResponse {
+  int32 replicas = 1;
+}
+
+message DeleteRequest {
+  string key = 1;
+}
+
+message DeleteResponse {
+  int32 replicas = 1;
+}
+
+message NodeInfo {
+  string host = 1;
+  string port = 2;
+}
+
+message HeartbeatRequest {
+  NodeInfo node = 1;
+}
+
+message HeartbeatResponse {
+  repeated NodeInfo nodes = 1;
+  int32 replication_factor = 2;
+  bool replication_warning = 3;
+}
+
+message JoinRequest {
+  NodeInfo new_node = 1;
+  int32 replication_factor = 2;
+}
+
+message JoinResponse {
+  repeated NodeInfo nodes = 1;
+  bool accepted = 2;
+}
+
+message SyncRequest {
+}
+
+message DataEntry {
+  string key = 1;
+  string value = 2;
+}

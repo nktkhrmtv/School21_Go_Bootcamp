@@ -1,0 +1,18 @@
+File: main
+Build ID: 34fac6f76e951b97eee4b2833d4709e3cf48c4a0
+Type: cpu
+Time: 2025-04-03 18:51:25 MSK
+Duration: 1.71s, Total samples = 1.32s (77.33%)
+Showing nodes accounting for 1.32s, 100% of 1.32s total
+      flat  flat%   sum%        cum   cum%
+     0.76s 57.58% 57.58%      1.03s 78.03%  day07/minCoinsFuncs.MinCoins2
+     0.10s  7.58% 65.15%      0.10s  7.58%  runtime.futex
+     0.06s  4.55% 69.70%      0.06s  4.55%  runtime.asyncPreempt
+     0.04s  3.03% 72.73%      0.07s  5.30%  runtime.scanblock
+     0.04s  3.03% 75.76%      0.04s  3.03%  runtime.typePointers.next
+     0.03s  2.27% 78.03%      0.04s  3.03%  runtime.findObject
+     0.03s  2.27% 80.30%      0.03s  2.27%  runtime.memclrNoHeapPointers
+     0.02s  1.52% 81.82%      0.02s  1.52%  internal/runtime/atomic.(*Uint32).Add (inline)
+     0.02s  1.52% 83.33%      0.02s  1.52%  runtime.nextFreeFast (inline)
+     0.02s  1.52% 84.85%      0.08s  6.06%  runtime.scanobject
+     0.01s  0.76% 85.61%      0.01s  0.76%  internal/runtime/maps.(*groupReference).elem (inline)

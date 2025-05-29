@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Мой блог</title>
+</head>
+<body>
+    <header>
+        <img src="/images/amazing_logo.png" alt="Логотип">
+        <h1>Мои идеи по улучшению мира</h1>
+    </header>
+    <main>
+        {{range .Posts}}
+        <article>
+            <h2><a href="/post/{{.ID}}">{{.Title}}</a></h2>
+            <p>{{.CreatedAt}}</p>
+        </article>
+        {{end}}
+    </main>
+    <footer>
+        {{if gt .PrevPage 0}}<a href="/?page={{.PrevPage}}">Назад</a>{{end}}
+        {{if le .NextPage .TotalPages}}<a href="/?page={{.NextPage}}">Вперед</a>{{end}}
+    </footer>
+</body>
+</html>

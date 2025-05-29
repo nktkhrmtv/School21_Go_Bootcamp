@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package message;
+
+option go_package = ".;message";
+
+message Message {
+    string session_id = 1;  
+    double frequency = 2;   
+    int64 timestamp = 3;   
+}
+
+service MessageService {
+    rpc StreamMessages (StreamMessagesRequest) returns (stream Message);
+}
+
+message StreamMessagesRequest {}

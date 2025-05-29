@@ -1,0 +1,94 @@
+package main
+
+import (
+	"bufio"
+	"flag"
+	"fmt"
+	"os"
+	"strings"
+	"sync"
+)
+
+func main() {
+	// Парсинг аргументов командной строки
+	linesFlag := flag.Bool("l", false, "Count lines")
+	charsFlag := flag.Bool("m", false, "Count characters")
+	wordsFlag := flag.Bool("w", false, "Count words")
+	flag.Parse()
+
+	// Проверка взаимоисключающих флагов
+	if (*linesFlag && *charsFlag) || (*linesFlag && *wordsFlag) || (*charsFlag && *wordsFlag) {
+		fmt.Println("Error: Only one of -l, -m, or -w can be specified.")
+		return
+	}
+
+	// Если флаги не указаны, используем подсчёт слов по умолчанию
+	if !*linesFlag && !*charsFlag && !*wordsFlag {
+		*wordsFlag = true
+	}
+
+	// Получаем список файлов
+	files := flag.Args()
+	if len(files) == 0 {
+		fmt.Println("Error: No files specified.")
+		return
+	}
+
+	// Канал для передачи результатов
+	results := make(chan string, len(files))
+
+	// Группа ожидания для горутин
+	var wg sync.WaitGroup
+	wg.Add(len(files))
+
+	// Обработка каждого файла в отдельной горутине
+	for _, file := range files {
+		go func(file string) {
+			defer wg.Done()
+
+			// Открываем файл
+			f, err := os.Open(file)
+			if err != nil {
+				results <- fmt.Sprintf("Error: %s", err)
+				return
+			}
+			defer f.Close()
+
+			// Чтение файла
+			scanner := bufio.NewScanner(f)
+			var lines, words, chars int
+
+			for scanner.Scan() {
+				line := scanner.Text()
+				lines++
+				words += len(strings.Fields(line))
+				chars += len(line) + 1 // +1 для символа новой строки
+			}
+
+			// Выбор результата в зависимости от флага
+			var result int
+			switch {
+			case *linesFlag:
+				result = lines
+			case *charsFlag:
+				result = chars
+			case *wordsFlag:
+				result = words
+			}
+
+			// Отправляем результат в канал
+			results <- fmt.Sprintf("%d\t%s", result, file)
+		}(file)
+	}
+
+	// Закрываем канал после завершения всех горутин
+	go func() {
+		wg.Wait()
+		close(results)
+	}()
+
+	// Вывод результатов
+	for res := range results {
+		fmt.Println(res)
+	}
+}
